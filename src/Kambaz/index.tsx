@@ -12,7 +12,7 @@ export default function Kambaz() {
       <tr><td valign="top">
         <KambazNavigation />
         </td><td valign="top">
-      <div>
+      <div  className="wd-main-content-offset p-3">
         <Routes>
           <Route path="/" element={<Navigate to="Account" />} />
           <Route path="/Account/*" element={<Account />} />

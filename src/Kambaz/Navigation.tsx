@@ -1,9 +1,11 @@
-import { Link } from "react-router-dom";
+import "./styles.css";
+import { Link, useLocation } from "react-router-dom";
 import { AiOutlineDashboard } from "react-icons/ai";
 import { IoCalendarOutline } from "react-icons/io5";
 import { LiaBookSolid, LiaCogSolid } from "react-icons/lia";
 import { FaInbox, FaRegCircleUser } from "react-icons/fa6";
 export default function KambazNavigation() {
+  const location = useLocation();
   return (
     <div 
     id="wd-kambaz-navigation"
@@ -16,16 +18,18 @@ export default function KambazNavigation() {
       <Link
         to="/Kambaz/Account"
         id="wd-account-link"
-        className="list-group-item text-center border-0 bg-black text-white"
-      >
-        <FaRegCircleUser className="fs-1 text-white" />
+        className={`list-group-item text-center border-0 ${location.pathname.startsWith("/Kambaz/Account") ? "bg-white text-black" : "bg-black text-white"}`}      
+        >
+        <FaRegCircleUser 
+        className="fs-1 text-white" 
+        />
         <br />
         Account
       </Link>
       <Link
       to="/Kambaz/Dashboard"
         id="wd-dashboard-link"
-        className="list-group-item text-center border-0 bg-black text-danger"
+        className={`list-group-item text-center border-0 bg-black text-danger ${location.pathname.startsWith("/Kambaz/Dashboard") ? "bg-white text-black" : "bg-black text-white"}`}
       >
         <AiOutlineDashboard className="fs-1 text-danger" />
         <br />
@@ -34,7 +38,7 @@ export default function KambazNavigation() {
       <Link
         to="/Kambaz/Courses/index"
         id="wd-course-link"
-        className="list-group-item text-white bg-black text-center border-0"
+        className={`list-group-item text-center border-0 bg-black text-danger ${location.pathname.startsWith("/Kambaz/Courses/index") ? "bg-white text-black" : "bg-black text-white"}`}
       >
         <LiaBookSolid className="fs-1 text-danger" />
         <br />
@@ -44,7 +48,7 @@ export default function KambazNavigation() {
       <Link
         to="/Kambaz/Calendar"
         id="wd-calendar-link"
-        className="list-group-item text-white bg-black text-center border-0"
+        className={`list-group-item text-center border-0 bg-black text-danger ${location.pathname.startsWith("/Kambaz/Calendar") ? "bg-white text-black" : "bg-black text-white"}`}
       >
         <IoCalendarOutline className="fs-1 text-danger" />
         <br />
@@ -54,7 +58,7 @@ export default function KambazNavigation() {
       <Link
         to="/Kambaz/Inbox"
         id="wd-inbox-link"
-        className="list-group-item text-white bg-black text-center border-0"
+        className={`list-group-item text-center border-0 bg-black text-danger ${location.pathname.startsWith("/Kambaz/Inbox") ? "bg-white text-black" : "bg-black text-white"}`}
       >
         <FaInbox className="fs-1 text-danger" />
         <br />
@@ -64,7 +68,7 @@ export default function KambazNavigation() {
       <Link
         to="/Labs"
         id="wd-labs-link"
-        className="list-group-item text-white bg-black text-center border-0"
+        className={`list-group-item text-center border-0 bg-black text-danger ${location.pathname.startsWith("/Labs") ? "bg-white text-black" : "bg-black text-white"}`}
       >
         <LiaCogSolid className="fs-1 text-danger" />
         <br />

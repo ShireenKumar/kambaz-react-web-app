@@ -9,7 +9,7 @@ export default function Courses() {
   return (
     <div id="wd-courses" >
   <h2 className="text-danger">
-      <FaAlignJustify className="me-4 fs-4 mb-1" style={{ paddingLeft: "105px", paddingTop: "20px" }}/>
+      <FaAlignJustify className="me-4 fs-4 mb-1"/>
       Course 1234 </h2> <hr />
   <div className="d-flex">
     <div className="d-none d-md-block">

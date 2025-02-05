@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 export default function Profile() {
   return (
-    <div id="wd-profile-screen"  style={{ paddingLeft: "130px", paddingTop: "20px" }}>
+    <div id="wd-profile-screen">
       <h3>Profile</h3>
       <input defaultValue="alice" placeholder="username" className="wd-username"/><br/>
       <input defaultValue="123"   placeholder="password" type="password"
