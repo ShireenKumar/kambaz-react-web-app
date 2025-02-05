@@ -1,6 +1,6 @@
 export default function Assignments() {
     return (
-      <div id="wd-assignments">
+      <div id="wd-assignments"  style={{ paddingLeft: "130px", paddingTop: "20px" }}>
         <input placeholder="Search for Assignments"
                id="wd-search-assignment" />
         <button id="wd-add-assignment-group">+ Group</button>

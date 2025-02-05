@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 export default function CourseNavigation() {
   return (
-    <div id="wd-courses-navigation">
+    <div id="wd-courses-navigation" style={{ paddingLeft: "130px", paddingTop: "20px" }}>
       <Link to="/Kambaz/Courses/1234/Home" id="wd-course-home-link">Home</Link><br/>
       <Link to="/Kambaz/Courses/1234/Modules" id="wd-course-modules-link">Modules
         </Link><br/>
