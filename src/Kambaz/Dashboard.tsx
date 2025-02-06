@@ -11,7 +11,7 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/f1.jpg" width="100%" height={160}/>
             <Card.Body>
               <Card.Title className="wd-dashboard-course-title">CS2500</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Fundementals of Computer Science 1</Card.Text>
@@ -24,7 +24,7 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/f2.jpg" width="100%" height={160}/>
             <Card.Body>
               <Card.Title className="wd-dashboard-course-title">CS2510</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Fundementals of Computer Science 2</Card.Text>
@@ -37,7 +37,7 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/math.jpg" width="100%" height={160}/>
             <Card.Body>
               <Card.Title className="wd-dashboard-course-title">CS1800</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Discrete Structures</Card.Text>
@@ -50,7 +50,7 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/ood.jpeg" width="100%" height={160}/>
             <Card.Body>
               <Card.Title className="wd-dashboard-course-title">CS3500</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Object Oriented Design</Card.Text>
@@ -63,9 +63,9 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/algo.png" width="100%" height={160}/>
             <Card.Body>
-              <Card.Title className="wd-dashboard-course-title">CS300</Card.Title>
+              <Card.Title className="wd-dashboard-course-title">CS3000</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Algorithms and Data Structures</Card.Text>
               <Button variant="primary">Go</Button>
             </Card.Body>
@@ -76,7 +76,7 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/web.png" width="100%" height={160}/>
             <Card.Body>
               <Card.Title className="wd-dashboard-course-title">CS4550</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Website Development</Card.Text>
@@ -89,7 +89,7 @@ export default function Dashboard() {
         <Card>
           <Link to="/Kambaz/Courses/1234/Home"
                 className="wd-dashboard-course-link text-decoration-none text-dark">
-            <Card.Img variant="top" src="/images/reactjs.jpg" width="100%" height={160}/>
+            <Card.Img variant="top" src="/images/db.png" width="100%" height={160}/>
             <Card.Body>
               <Card.Title className="wd-dashboard-course-title">CS3200</Card.Title>
               <Card.Text  className="wd-dashboard-course-description">Database Design</Card.Text>

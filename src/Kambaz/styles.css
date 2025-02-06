@@ -33,3 +33,25 @@ body * {  font-family: Arial, Helvetica, sans-serif;  }
     border-left: 3px solid green !important;
   }
   
+  .top-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 50px;
+    padding: 0 15px;
+  }
+  
+  .menu-icon {
+    cursor: pointer;
+    font-size: 24px;
+  }
+
+  @media (max-width: 768px) {
+    #sidebar {
+      transform: translateX(-120px);
+    }
+  
+    #menu-toggle:checked + #sidebar {
+      transform: translateX(0);
+    }
+  }
