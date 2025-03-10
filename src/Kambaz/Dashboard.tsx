@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { Card, Row, Col, Button, Form } from "react-bootstrap"; // Import Form from react-bootstrap
+import { Card, Row, Col, Button, Form } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import * as db from "./Database";
-import { v4 as uuidv4 } from "uuid";  // Ensure uuid is installed
+import { v4 as uuidv4 } from "uuid"; 
+import { useSelector } from "react-redux";
+
 
 export default function Dashboard() {
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { enrollments } = db;
   const [courses, setCourses] = useState<any[]>(db.courses);
   const [course, setCourse] = useState<any>({
     _id: "0", name: "New Course", number: "New Number",
@@ -85,7 +89,7 @@ export default function Dashboard() {
                     <button id="wd-edit-course-click"
                       onClick={(event) => {
                         event.preventDefault();
-                        setCourse(course);  // Open the course for editing
+                        setCourse(course);  
                       }}
                       className="btn btn-warning me-2 float-end">
                       Edit

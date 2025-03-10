@@ -4,6 +4,7 @@ import Dashboard from "./Dashboard";
 import KambazNavigation from "./Navigation";
 import Courses from "./Courses";
 import * as db from "./Database";
+import Account from "./Account";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -41,7 +42,8 @@ export default function Kambaz() {
       <div  className="wd-main-content-offset p-3">
         <Routes>
           <Route path="/" element={<Navigate to="Dashboard" />} />
-          <Route path="Account" element={<h1>Account</h1>} />
+          <Route path="/" element={<Navigate to="Account" />} />
+          <Route path="/Account/*" element={<Account />} />
           <Route path="Dashboard" element={
             <Dashboard
               courses={courses}
