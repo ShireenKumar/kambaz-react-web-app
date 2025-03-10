@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ListGroup } from "react-bootstrap";
 import { BsGripVertical } from "react-icons/bs"; 
 import ModulesControls from "./ModulesControls"; 
@@ -6,23 +7,42 @@ import LessonControlButtons from "./LessonControlButtons";
 import "../../styles.css";
 import { useParams } from "react-router";
 import * as db from "../../Database";
+import { v4 as uuidv4 } from "uuid";
+
 
 export default function Modules() {
   const { cid } = useParams(); 
-  const modules = db.modules;
+  const [modules, setModules] = useState<any[]>(db.modules);
+  const [moduleName, setModuleName] = useState("");
+  const addModule = () => {
+    setModules([ ...modules, { _id: uuidv4(), name: moduleName, course: cid, lessons: [] } ]);
+    setModuleName("");
+  };
+  const deleteModule = (moduleId: string) => {
+    setModules(modules.filter((m) => m._id !== moduleId));
+  };
+
+
+  // const modules = db.modules;
 
   return (
     <div>
-      <ModulesControls />
-      <br /><br /><br /><br />
+      {/* <ModulesControls />
+      <br /><br /><br /><br /> */}
       
       <ListGroup className="rounded-0" id="wd-modules">
+      <ModulesControls setModuleName={setModuleName} moduleName={moduleName} addModule={addModule} />
+
       {modules
+      
           .filter((module: any) => module.course === cid)
           .map((module: any) => (
           <li className="wd-module list-group-item p-0 mb-5 fs-5 border-gray">
             <div className="wd-title p-3 ps-2 bg-secondary">
-              <BsGripVertical className="me-2 fs-3" /> {module.name} <ModuleControlButtons />
+              <BsGripVertical className="me-2 fs-3" /> {module.name} <ModuleControlButtons
+        moduleId={module._id}
+        deleteModule={deleteModule}/>
+
             </div>
             {module.lessons && (
               <ul className="wd-lessons list-group rounded-0">
