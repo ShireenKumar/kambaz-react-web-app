@@ -17,24 +17,6 @@ export default function AssignmentEditor({ assignmentName, setAssignmentName, ad
     const [availableFrom, setAvailableFrom] = useState("2025-02-20");
     const [availableUntil, setAvailableUntil] = useState("2025-03-20");
 
-    // const handleSave = () => {
-    //     if (!title || !dueDate) return;
-
-    //     dispatch(
-    //         addAssignment({
-    //             _id: uuidv4(),
-    //             title,
-    //             description,
-    //             points,
-    //             dueDate,
-    //             availableFrom,
-    //             availableUntil,
-    //             course: cid,
-    //         })
-    //     );
-
-    //     navigate(`/Kambaz/Courses/${cid}/Assignments`);
-    // };
 
     const handleCancel = () => {
         navigate(`/Kambaz/Courses/${cid}/Assignments`);
