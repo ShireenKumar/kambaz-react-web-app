@@ -34,6 +34,7 @@ export default function Kambaz() {
     );
   };
 
+
   return (
     <div id="wd-kambaz">
     <table width="100%">
