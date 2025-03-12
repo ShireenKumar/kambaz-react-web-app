@@ -13,15 +13,20 @@ export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const isFaculty = currentUser?.role === "FACULTY";
   const dispatch = useDispatch();
 
   return (
     <div className="wd-modules container-fluid">
-      <ModulesControls moduleName={moduleName} setModuleName={setModuleName}
-        addModule={() => {
-          dispatch(addModule({ name: moduleName, course: cid }));
-          setModuleName("");
-        }} />
+      {isFaculty && (
+        <ModulesControls moduleName={moduleName} setModuleName={setModuleName}
+          addModule={() => {
+            dispatch(addModule({ name: moduleName, course: cid }));
+            setModuleName("");
+          }} />
+      )}
+
       <ListGroup id="wd-modules" className="rounded-0 w-100">
         {modules.filter((module: any) => module.course === cid).map((module: any) => (
           <li key={module._id} className="wd-module list-group-item p-4 mb-4 fs-5 border-gray w-100">
@@ -29,7 +34,7 @@ export default function Modules() {
               <div className="d-flex align-items-center flex-grow-1">
                 <BsGripVertical className="me-3 fs-3" />
                 {!module.editing && <span className="fs-5">{module.name}</span>}
-                {module.editing && (
+                {module.editing && isFaculty && (
                   <FormControl className="w-75 d-inline-block"
                     onChange={(e) => dispatch(updateModule({ ...module, name: e.target.value }))}
                     onKeyDown={(e) => {
@@ -40,15 +45,18 @@ export default function Modules() {
                     defaultValue={module.name} />
                 )}
               </div>
-              <ModuleControlButtons moduleId={module._id}
-                deleteModule={() => dispatch(deleteModule(module._id))}
-                editModule={() => dispatch(editModule(module._id))} />
+              {isFaculty && (
+                <ModuleControlButtons moduleId={module._id}
+                  deleteModule={() => dispatch(deleteModule(module._id))}
+                  editModule={() => dispatch(editModule(module._id))} />
+              )}
             </div>
             {module.lessons && (
               <ul className="wd-lessons list-group rounded-0">
                 {module.lessons.map((lesson: any) => (
                   <li key={lesson._id} className="wd-lesson list-group-item p-4 ps-2">
-                    <BsGripVertical className="me-3 fs-3" /> {lesson.name} <LessonControlButtons />
+                    <BsGripVertical className="me-3 fs-3" /> {lesson.name} 
+                    {isFaculty && <LessonControlButtons />}
                   </li>
                 ))}
               </ul>

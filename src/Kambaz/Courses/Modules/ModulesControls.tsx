@@ -1,12 +1,12 @@
 import { FaPlus } from "react-icons/fa6";
 import { Button, Dropdown } from "react-bootstrap";
 import { useState } from "react";
-import ModuleEditor from "./ModuleEditor"; // Assuming this is a component
-import GreenCheckmark from "./GreenCheckmark"; // Assuming this is a component
+import ModuleEditor from "./ModuleEditor"; 
+import GreenCheckmark from "./GreenCheckmark"; 
 import { MdOutlineDoNotDisturb } from "react-icons/md";
 
 
-// Define the props interface for ModulesControls
+
 interface ModulesControlsProps {
   moduleName: string;
   setModuleName: React.Dispatch<React.SetStateAction<string>>;
