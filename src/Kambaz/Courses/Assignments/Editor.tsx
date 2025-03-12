@@ -1,124 +1,165 @@
-import { Form, Container, Row, Col, Card } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { Form, Container, Row, Col, Button } from "react-bootstrap";
+import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import assignments from '../../Database/assignments.json';
+import { useState } from "react";
 
-export default function AssignmentEditor() {
-    const { cid, aid } = useParams();
+export default function AssignmentEditor({ assignmentName, setAssignmentName, addAssignment,}: {
+    show: boolean; handleClose: () => void; dialogTitle: string; assignmentName: string; setAssignmentName: (name: string) => void;
+    addAssignment: () => void; }) {
+
+    const { cid } = useParams();
+    const navigate = useNavigate();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const isFaculty = currentUser?.role === "FACULTY";
+    const [description, setDescription] = useState("");
+    const [points, setPoints] = useState(100);
+    const [dueDate, setDueDate] = useState("2025-02-21");
+    const [availableFrom, setAvailableFrom] = useState("2025-02-20");
+    const [availableUntil, setAvailableUntil] = useState("2025-03-20");
 
-    const assignment = assignments.find((a: any) => a._id === aid);
+    // const handleSave = () => {
+    //     if (!title || !dueDate) return;
 
-    if (!assignment) {
-        return <h3>Assignment not found</h3>;
-    }
+    //     dispatch(
+    //         addAssignment({
+    //             _id: uuidv4(),
+    //             title,
+    //             description,
+    //             points,
+    //             dueDate,
+    //             availableFrom,
+    //             availableUntil,
+    //             course: cid,
+    //         })
+    //     );
+
+    //     navigate(`/Kambaz/Courses/${cid}/Assignments`);
+    // };
+
+    const handleCancel = () => {
+        navigate(`/Kambaz/Courses/${cid}/Assignments`);
+    };
+
+    const handleBack = () => {
+        navigate(`/Courses/${cid}/Assignments`);
+    };
 
     return (
         <Container id="wd-assignments-editor">
-            <h2>Edit Assignment: {assignment.title}</h2>
+            <h2>Create Assignment</h2>
 
             <Form>
                 <Row className="align-items-center">
-                    <Col xs={3}><Form.Label>Assignment Name</Form.Label></Col>
+                    <Col xs={3}>
+                        <Form.Label>Assignment Name</Form.Label>
+                    </Col>
                     <Col>
-                        <Form.Control type="text" defaultValue={assignment.title} disabled={!isFaculty} />
+                        <Form.Control
+                            type="text"
+                            value={assignmentName}
+                            onChange={(e) => setAssignmentName(e.target.value)}
+                            disabled={!isFaculty}
+                        />
                     </Col>
                 </Row>
 
                 <Row className="align-items-center mt-2">
-                    <Col xs={3}><Form.Label>Description</Form.Label></Col>
+                    <Col xs={3}>
+                        <Form.Label>Description</Form.Label>
+                    </Col>
                     <Col>
-                        <Form.Control as="textarea" rows={4} defaultValue="Describe the assignment here..." disabled={!isFaculty} />
+                        <Form.Control
+                            as="textarea"
+                            rows={4}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            disabled={!isFaculty}
+                        />
                     </Col>
                 </Row>
 
                 <Row className="align-items-center mt-2">
-                    <Col xs={3}><Form.Label>Points</Form.Label></Col>
+                    <Col xs={3}>
+                        <Form.Label>Points</Form.Label>
+                    </Col>
                     <Col>
-                        <Form.Control type="number" defaultValue="100" disabled={!isFaculty} />
+                        <Form.Control
+                            type="number"
+                            value={points}
+                            onChange={(e) => setPoints(Number(e.target.value))}
+                            disabled={!isFaculty}
+                        />
                     </Col>
                 </Row>
 
                 <Row className="align-items-center mt-2">
-                    <Col xs={3}><Form.Label>Assignment Group</Form.Label></Col>
+                    <Col xs={3}>
+                        <Form.Label>Due Date</Form.Label>
+                    </Col>
                     <Col>
-                        <Form.Control as="select" defaultValue="Assignment" disabled={!isFaculty}>
-                            <option>Assignment</option>
-                            <option>Project</option>
-                            <option>Quiz</option>
-                        </Form.Control>
+                        <Form.Control
+                            type="date"
+                            value={dueDate}
+                            onChange={(e) => setDueDate(e.target.value)}
+                            disabled={!isFaculty}
+                        />
                     </Col>
                 </Row>
 
                 <Row className="align-items-center mt-2">
-                    <Col xs={3}><Form.Label>Display Grade As</Form.Label></Col>
-                    <Col>
-                        <Form.Control as="select" defaultValue="Percentage" disabled={!isFaculty}>
-                            <option>Percentage</option>
-                            <option>Letter</option>
-                            <option>Fraction</option>
-                        </Form.Control>
+                    <Col xs={6}>
+                        <Form.Label>Available from</Form.Label>
+                    </Col>
+                    <Col xs={6}>
+                        <Form.Label>Until</Form.Label>
                     </Col>
                 </Row>
 
-                <Row className="align-items-center mt-2">
-                    <Col xs={3}><Form.Label>Submission Type</Form.Label></Col>
-                    <Card className="mt-3 p-3">
-                        <Card.Body>
-                            <Form.Control as="select" defaultValue="Online" disabled={!isFaculty}>
-                                <option>Online</option>
-                                <option>Paper</option>
-                            </Form.Control>
-
-                            <Form.Group controlId="wd-online-entry-options" className="mt-2">
-                                <Form.Label>Online Entry Options</Form.Label>
-                                <div>
-                                    <Form.Check type="checkbox" label="Text Entry" disabled={!isFaculty} />
-                                    <Form.Check type="checkbox" label="Website URL" defaultChecked disabled={!isFaculty} />
-                                    <Form.Check type="checkbox" label="Media Recordings" disabled={!isFaculty} />
-                                    <Form.Check type="checkbox" label="Student Annotation" disabled={!isFaculty} />
-                                    <Form.Check type="checkbox" label="File Uploads" disabled={!isFaculty} />
-                                </div>
-                            </Form.Group>
-                        </Card.Body>
-                    </Card>
-                </Row>
-
-                <Row className="align-items-center mt-2">
-                    <Col xs={3}><Form.Label>Assign</Form.Label></Col>
-                    <Card className="mt-3 p-3">
-                        <Card.Body>
-                            <Row className="align-items-center mt-2">
-                                <Col xs={3}><Form.Label>Assign to</Form.Label></Col>
-                                <Col><Form.Control type="text" defaultValue="Everyone" disabled={!isFaculty} /></Col>
-                            </Row>
-
-                            <Row className="align-items-center mt-2">
-                                <Col xs={3}><Form.Label>Due Date</Form.Label></Col>
-                                <Col><Form.Control type="date" defaultValue="2025-02-21" disabled={!isFaculty} /></Col>
-                            </Row>
-
-                            <Row className="align-items-center mt-2">
-                                <Col xs={6}><Form.Label>Available from</Form.Label></Col>
-                                <Col xs={6}><Form.Label>Until</Form.Label></Col>
-                            </Row>
-                            <Row className="align-items-center">
-                                <Col xs={6}><Form.Control type="date" defaultValue="2025-02-20" disabled={!isFaculty} /></Col>
-                                <Col xs={6}><Form.Control type="date" defaultValue="2025-03-20" disabled={!isFaculty} /></Col>
-                            </Row>
-                        </Card.Body>
-                    </Card>
+                <Row className="align-items-center">
+                    <Col xs={6}>
+                        <Form.Control
+                            type="date"
+                            value={availableFrom}
+                            onChange={(e) => setAvailableFrom(e.target.value)}
+                            disabled={!isFaculty}
+                        />
+                    </Col>
+                    <Col xs={6}>
+                        <Form.Control
+                            type="date"
+                            value={availableUntil}
+                            onChange={(e) => setAvailableUntil(e.target.value)}
+                            disabled={!isFaculty}
+                        />
+                    </Col>
                 </Row>
 
                 {isFaculty ? (
                     <div className="mt-3">
-                        <Link to={`/courses/${cid}/assignments`} className="btn btn-primary me-2">Save</Link>
-                        <Link to={`/courses/${cid}/assignments`} className="btn btn-secondary">Cancel</Link>
+                        <Button
+                            onClick={() => {
+                                addAssignment();
+                                handleCancel;
+                               }}
+                            className="btn btn-primary me-2"
+                        >
+                            Save
+                        </Button>
+                        <Button
+                            onClick={handleCancel}
+                            className="btn btn-secondary"
+                        >
+                            Cancel
+                        </Button>
                     </div>
                 ) : (
                     <div className="mt-3">
-                        <Link to={`/courses/${cid}/assignments`} className="btn btn-secondary">Back</Link>
+                        <Button
+                            onClick={handleBack}
+                            className="btn btn-secondary"
+                        >
+                            Back
+                        </Button>
                     </div>
                 )}
             </Form>
