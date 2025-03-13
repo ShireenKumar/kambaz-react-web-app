@@ -3,32 +3,47 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 
-export default function AssignmentEditor({ assignmentName, setAssignmentName, addAssignment,}: {
-    show: boolean; handleClose: () => void; dialogTitle: string; assignmentName: string; setAssignmentName: (name: string) => void;
-    addAssignment: () => void; }) {
+export default function AssignmentEditor({ 
+    assignmentId, 
+    updateAssignment, 
+    handleClose
+}: { 
+    assignmentId?: string; 
+    updateAssignment: (assignment: any) => void; 
+    handleClose: () => void; 
+}) {
 
     const { cid } = useParams();
     const navigate = useNavigate();
     const { currentUser } = useSelector((state: any) => state.accountReducer);
     const isFaculty = currentUser?.role === "FACULTY";
+    
+    const [title, setTitle] = useState("");
+    const course = useState("");
     const [description, setDescription] = useState("");
     const [points, setPoints] = useState(100);
     const [dueDate, setDueDate] = useState("2025-02-21");
     const [availableFrom, setAvailableFrom] = useState("2025-02-20");
     const [availableUntil, setAvailableUntil] = useState("2025-03-20");
 
-
     const handleCancel = () => {
         navigate(`/Kambaz/Courses/${cid}/Assignments`);
+        handleClose();
     };
 
-    const handleBack = () => {
-        navigate(`/Courses/${cid}/Assignments`);
+    const handleSave = () => {
+        updateAssignment({
+            _id: assignmentId, 
+            title, 
+            course 
+        });
+        navigate(`/Kambaz/Courses/${cid}/Assignments`);
+        handleClose();
     };
 
     return (
         <Container id="wd-assignments-editor">
-            <h2>Create Assignment</h2>
+            <h2>{assignmentId ? "Edit Assignment" : "Create Assignment"}</h2>
 
             <Form>
                 <Row className="align-items-center">
@@ -38,8 +53,8 @@ export default function AssignmentEditor({ assignmentName, setAssignmentName, ad
                     <Col>
                         <Form.Control
                             type="text"
-                            value={assignmentName}
-                            onChange={(e) => setAssignmentName(e.target.value)}
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
                             disabled={!isFaculty}
                         />
                     </Col>
@@ -118,28 +133,16 @@ export default function AssignmentEditor({ assignmentName, setAssignmentName, ad
 
                 {isFaculty ? (
                     <div className="mt-3">
-                        <Button
-                            onClick={() => {
-                                addAssignment();
-                                handleCancel;
-                               }}
-                            className="btn btn-primary me-2"
-                        >
+                        <Button onClick={handleSave} className="btn btn-primary me-2">
                             Save
                         </Button>
-                        <Button
-                            onClick={handleCancel}
-                            className="btn btn-secondary"
-                        >
+                        <Button onClick={handleCancel} className="btn btn-secondary">
                             Cancel
                         </Button>
                     </div>
                 ) : (
                     <div className="mt-3">
-                        <Button
-                            onClick={handleBack}
-                            className="btn btn-secondary"
-                        >
+                        <Button onClick={handleCancel} className="btn btn-secondary">
                             Back
                         </Button>
                     </div>

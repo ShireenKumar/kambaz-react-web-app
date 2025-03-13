@@ -10,25 +10,23 @@ import "../../styles.css";
 import { useParams } from "react-router";
 import { useSelector, useDispatch } from "react-redux";
 import assignments from "../../Database/assignments.json";
-import { addAssignment, deleteAssignment, updateAssignment } from "./reducer";
-
+import { deleteAssignment, updateAssignment } from "./reducer";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const [assignmentName, setAssignmentName] = useState("");
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const filteredAssignments = assignments.filter((assignment: any) => assignment.course === cid);
   const isFaculty = currentUser?.role === "FACULTY";
   const dispatch = useDispatch();
+  const [editingAssignmentId] = useState<string | null>(null);
 
   return (
     <div id="wd-assignments">
       {isFaculty && (
-        <AssignmentControls assignmentName={assignmentName} setAssignmentName={setAssignmentName}
-        addAssignment={() => {
-            dispatch(addAssignment({ name: assignmentName, course: cid }));
-            setAssignmentName("");
-          }} />
+        <AssignmentControls 
+          assignmentId={editingAssignmentId || undefined}
+          updateAssignment={(updatedAssignment) => dispatch(updateAssignment(updatedAssignment))}
+        />
       )}
       <br /><br /><br /><br />
 
@@ -38,9 +36,11 @@ export default function Assignments() {
             <div className="wd-title p-3 ps-2 bg-secondary text-black">
               <BsGripVertical className="me-2 fs-3" /> {assignment.title}
               {isFaculty && (
-                <ModuleControlButtons moduleId={assignment._id}
+                <ModuleControlButtons 
+                  moduleId={assignment._id}
                   deleteModule={() => dispatch(deleteAssignment(assignment._id))}
-                  editModule={() => dispatch(updateAssignment(assignment._id))} />
+                  editModule={() => updateAssignment(assignment._id)} 
+                />
               )}
             </div>
             
