@@ -1,25 +1,33 @@
-import { FaPlus } from "react-icons/fa6";
-import { Button } from "react-bootstrap";
-import { useState } from "react";
-import AssignmentEditor from "./Editor";
+import { FaPlus, FaSearch } from "react-icons/fa";
+import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
 
-interface AssignmentControlsProps {
-  assignmentId?: string;
-  updateAssignment: (assignment: any) => void;
-}
 
-export default function AssignmentControls({ assignmentId, updateAssignment }: AssignmentControlsProps) {
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+export default function AssignmentControls() {
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+    const navigate = useNavigate();
+    const { cid } = useParams();
+    
+    const isFaculty = currentUser?.role === "FACULTY";
 
-  return (
-    <div id="wd-assignment-controls" className="text-nowrap">
-      <Button variant="danger" size="lg" className="me-1 float-end" onClick={handleShow}>
-        <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
-        {assignmentId ? "Edit Assignment" : "New Assignment"}
-      </Button>
-      {show && <AssignmentEditor assignmentId={assignmentId} updateAssignment={updateAssignment} handleClose={handleClose} />}
-    </div>
-  );
+    return (
+        <div id="wd-assignment-controls" className="text-nowrap">
+            {isFaculty && <>
+                <button id="wd-add-assignment-btn" className="btn btn-lg btn-danger me-1 float-end"
+                    onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/new`)}>
+                    <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} 
+                     />
+                    Assignment </button>
+                <button id="wd-add-group" className="btn btn-lg btn-secondary me-1 float-end">
+                    <FaPlus className="position-relative me-2" style={{ bottom: "1px" }} />
+                    Group
+                </button>
+            </>}
+
+            <span className="d-inline-flex align-items-center">
+                <FaSearch className="position-relative me-2" color="gray" style={{ bottom: "1px" }} />
+                <input id="wd-assignment-search" className="position-relative me-2" placeholder="Search..." />
+            </span>
+        </div>
+    )
 }
