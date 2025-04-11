@@ -17,6 +17,7 @@ export default function Profile() {
 
   const fetchProfile = () => {
     if (!currentUser) return navigate("/Kambaz/Account/Signin");
+    console.log("currentUser debug: ",currentUser);
     setProfile(currentUser);
   };
   const signout = async () => {
