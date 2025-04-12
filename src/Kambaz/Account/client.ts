@@ -32,5 +32,13 @@ export const createCourse = async (course: any) => {
     return data;
 };
   
+export const fetchProfile = async () => {
+  const response = await axios.post(
+    "http://localhost:4000/api/users/profile",
+    {}, // body
+    { withCredentials: true } // <- ✅ critical
+  );
+  return response.data;
+};
 
     

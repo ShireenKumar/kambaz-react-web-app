@@ -1,0 +1,24 @@
+import { Button } from "react-bootstrap";
+import * as enrollmentsClient from "../Enrollments/client";
+import { useState } from "react";
+
+export default function EnrollmentButtonUpdated({
+  courseId, isEnrolled: initialEnrollment, currentUser, }: {courseId: string; isEnrolled: boolean; currentUser: { _id: string };
+
+}) {
+  const [isEnrolled, setIsEnrolled] = useState(initialEnrollment);
+  const handle = async () => {
+    if (isEnrolled) {
+        await enrollmentsClient.unenrollUserFromCourse(currentUser._id, courseId);
+      setIsEnrolled(false);
+    } else {
+        await enrollmentsClient.enrollUserInCourse(currentUser._id, courseId);
+    setIsEnrolled(true);
+      }
+  };
+  return (
+    <Button variant={isEnrolled ? "danger" : "success"} onClick={handle}>
+      {isEnrolled ? "Unenroll" : "Enroll"}
+    </Button>
+  );
+}
