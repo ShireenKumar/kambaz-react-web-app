@@ -1,5 +1,3 @@
-
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { setCurrentUser } from "./reducer";
@@ -35,4 +33,3 @@ export default function Signin() {
       <Link id="wd-signup-link" to="/Kambaz/Account/Signup"> Sign up </Link>
     </div>
 );}
-
