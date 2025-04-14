@@ -17,18 +17,6 @@ export default function Assignments() {
     const { cid } = useParams();
     const n = useNavigate();
     const [assignments, setAssignments] = useState<any[]>([]);
-    //const [assignmentName, setAssignmentName] = useState("");
-    // const [courseAssignments, setCourseAssignments] = useState<any[]>([]);
-
-
-    // useEffect(() => {
-    //   const fetchAssignments = async () => {
-    //     const courses = await assignmentClient.findAssignmentsForCourse(cid!);
-    //     setAssignments(courses);
-    //   };
-    //   fetchAssignments();
-    // }, [cid]);
-
     useEffect(() => {
       const fetchAssignments = async () => {
         try {

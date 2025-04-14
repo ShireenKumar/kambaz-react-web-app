@@ -8,7 +8,6 @@ export default function AssignmentEditor() {
   const { aid, cid } = useParams();
   const navigate = useNavigate();
 
-  //uuidv4
   const [assignment, setAssignment] = useState<any>({
     _id: uuidv4(), title: "", description: "", points: "100", due: "", available: "", availableUntil: "", course: cid, module: "Multiple Modules",
   });
