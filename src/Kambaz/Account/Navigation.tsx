@@ -12,8 +12,12 @@ export default function AccountNavigation() {
         { name: "Signup", path: "/Kambaz/Account/Signup" },
       ];
 
+  if (currentUser && currentUser.role === "ADMIN") {
+    links.push({ name: "Users", path: "/Kambaz/Account/Users" });
+  }
+
   return (
-    <nav className="list-group">
+    <nav className="list-group" id="wd-account-navigation">
       {links.map((link) => (
         <Link
           key={link.name}
