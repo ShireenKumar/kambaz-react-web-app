@@ -89,7 +89,7 @@ export default function Kambaz() {
                         courses={courses}
                         course={course}
                         setCourse={setCourse}
-                        addNewCourse={addNewCourse} // ✅ passed correctly
+                        addNewCourse={addNewCourse}
                         deleteCourse={deleteCourse}
                         updateCourse={updateCourse}
                       />

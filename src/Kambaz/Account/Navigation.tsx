@@ -5,11 +5,16 @@ export default function AccountNavigation() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { pathname } = useLocation();
 
-  const links = currentUser
-    ? [{ name: "Profile", path: "/Kambaz/Account/Profile" }]
-    : [
+  const links = !currentUser
+    ? [
         { name: "Signin", path: "/Kambaz/Account/Signin" },
         { name: "Signup", path: "/Kambaz/Account/Signup" },
+      ]
+    : [
+        { name: "Profile", path: "/Kambaz/Account/Profile" },
+        ...(currentUser.role === "ADMIN"
+          ? [{ name: "Users", path: "/Kambaz/Account/Users" }]
+          : []),
       ];
 
   return (
