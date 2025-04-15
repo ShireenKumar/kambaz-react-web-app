@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import { setEnrollments } from "./Courses/People/enrollmentsReducer";
+import * as enrollmentsClient from "./Enrollments/client";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Card, FormControl, Button } from "react-bootstrap";
-
 import EnrollmentButtonUpdated from "./Enrollments/EnrollmentButton";
 
 export default function Dashboard({
@@ -20,6 +21,9 @@ export default function Dashboard({
   deleteCourse: (courseId: any) => void;
   updateCourse: (course: any) => void;
 }) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments = [] } = useSelector(
     (state: any) => state.enrollmentsReducer
@@ -27,6 +31,7 @@ export default function Dashboard({
 
   const isFacultyTrue = currentUser?.role === "Faculty";
   const isStudentTrue = currentUser?.role === "Student";
+
   const [showEnrollments, setShowEnrollments] = useState(false);
   const [editingCourse, setEditingCourse] = useState<any | null>(null);
   const [newCourse, setNewCourse] = useState({
@@ -38,8 +43,6 @@ export default function Dashboard({
     image: "/default.jpg",
     description: "",
   });
-
-  const navigate = useNavigate();
 
   const isEnrolledTrue = (courseId: string) =>
     enrollments.some(
@@ -55,7 +58,7 @@ export default function Dashboard({
     : courses.filter((course: any) => isEnrolledTrue(course._id));
 
   const handleCreateCourse = async () => {
-    await addNewCourse(newCourse); // ✅ use prop from index
+    await addNewCourse(newCourse);
     setNewCourse({
       name: "",
       number: "",
@@ -66,6 +69,23 @@ export default function Dashboard({
       description: "",
     });
   };
+
+  // Load student enrollments from backend
+  useEffect(() => {
+    const loadEnrollments = async () => {
+      if (currentUser?.role === "Student") {
+        const userCourses = await enrollmentsClient.findCoursesForUser(
+          currentUser._id
+        );
+        const formatted = userCourses.map((c: any) => ({
+          user: currentUser._id,
+          course: c._id,
+        }));
+        dispatch(setEnrollments(formatted));
+      }
+    };
+    loadEnrollments();
+  }, [currentUser, dispatch]);
 
   return (
     <div className="p-4" id="wd-dashboard">
