@@ -12,28 +12,44 @@ export default function Users() {
   const { uid } = useParams();
 
   const fetchUsers = async () => {
-    const users = await client.findAllUsers();
-    setUsers(users);
+    const allUsers = await client.findAllUsers();
+    applyFilters(allUsers, role, name);
   };
 
-  const filterUsersByRole = async (role: string) => {
-    setRole(role);
+  const applyFilters = (allUsers: any[], role: string, name: string) => {
+    let filtered = allUsers;
+
     if (role) {
-      const users = await client.findUsersByRole(role.toUpperCase());
-      setUsers(users);
-    } else {
-      fetchUsers();
+      const roleLC = role.toLowerCase();
+      filtered = filtered.filter((u) => u.role?.toLowerCase() === roleLC);
     }
+
+    if (name) {
+      const nameLC = name.toLowerCase();
+      filtered = filtered.filter(
+        (u) =>
+          (u.firstName && u.firstName.toLowerCase().includes(nameLC)) ||
+          (u.lastName && u.lastName.toLowerCase().includes(nameLC))
+      );
+    }
+
+    setUsers(filtered);
   };
 
-  const filterUsersByName = async (name: string) => {
-    setName(name);
-    if (name) {
-      const users = await client.findUsersByPartialName(name);
-      setUsers(users);
-    } else {
-      fetchUsers();
-    }
+  useEffect(() => {
+    fetchUsers();
+  }, [uid]);
+
+  const handleRoleChange = async (value: string) => {
+    const allUsers = await client.findAllUsers();
+    setRole(value);
+    applyFilters(allUsers, value, name);
+  };
+
+  const handleNameChange = async (value: string) => {
+    const allUsers = await client.findAllUsers();
+    setName(value);
+    applyFilters(allUsers, role, value);
   };
 
   const createUser = async () => {
@@ -46,12 +62,8 @@ export default function Users() {
       section: "S101",
       role: "STUDENT",
     });
-    setUsers([...users, user]);
-  };
-
-  useEffect(() => {
     fetchUsers();
-  }, [uid]);
+  };
 
   return (
     <div>
@@ -60,14 +72,17 @@ export default function Users() {
         <FaPlus className="me-2" />
         Users
       </button>
+
       <FormControl
-        onChange={(e) => filterUsersByName(e.target.value)}
+        value={name}
+        onChange={(e) => handleNameChange(e.target.value)}
         placeholder="Search people"
         className="float-start w-25 me-2 wd-filter-by-name"
       />
+
       <select
         value={role}
-        onChange={(e) => filterUsersByRole(e.target.value)}
+        onChange={(e) => handleRoleChange(e.target.value)}
         className="form-select float-start w-25 wd-select-role"
       >
         <option value="">All Roles</option>
@@ -76,6 +91,7 @@ export default function Users() {
         <option value="FACULTY">Faculty</option>
         <option value="ADMIN">Administrators</option>
       </select>
+
       <PeopleTable users={users} />
     </div>
   );
