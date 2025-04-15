@@ -35,10 +35,10 @@ export default function Kambaz() {
     fetchCourses();
   }, [currentUser]);
 
-  const addNewCourse = async () => {
+  const addNewCourse = async (newCourse: any) => {
     try {
-      const newCourse = await courseClient.createCourse(course);
-      setCourses([...courses, newCourse]);
+      const savedCourse = await courseClient.createCourse(newCourse);
+      setCourses([...courses, savedCourse]); // ✅ update UI
     } catch (error) {
       console.error("Error adding course:", error);
     }
@@ -89,9 +89,9 @@ export default function Kambaz() {
                         courses={courses}
                         course={course}
                         setCourse={setCourse}
-                        addNewCourse={addNewCourse}
+                        addNewCourse={addNewCourse} // ✅ passed correctly
                         deleteCourse={deleteCourse}
-                        updateCourse={updateCourse} // now takes a course argument
+                        updateCourse={updateCourse}
                       />
                     </ProtectedRoute>
                   }

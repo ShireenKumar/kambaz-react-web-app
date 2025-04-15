@@ -1,28 +1,25 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Card, FormControl, Button } from "react-bootstrap";
 
-import { addCourse } from "./Courses/courseReducer";
 import EnrollmentButtonUpdated from "./Enrollments/EnrollmentButton";
-import { createCourse } from "./Courses/client";
 
 export default function Dashboard({
   courses,
-  // course,
-  // setCourse,
-  // addNewCourse,
+  course,
+  setCourse,
+  addNewCourse,
   deleteCourse,
   updateCourse,
 }: {
   courses: any[];
   course: any;
   setCourse: React.Dispatch<any>;
-  addNewCourse: () => void;
+  addNewCourse: (course: any) => void;
   deleteCourse: (courseId: any) => void;
   updateCourse: (course: any) => void;
 }) {
-  const dispatch = useDispatch();
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const { enrollments = [] } = useSelector(
     (state: any) => state.enrollmentsReducer
@@ -30,9 +27,17 @@ export default function Dashboard({
 
   const isFacultyTrue = currentUser?.role === "Faculty";
   const isStudentTrue = currentUser?.role === "Student";
-  const [courseName, setCourseName] = useState("");
   const [showEnrollments, setShowEnrollments] = useState(false);
-  const [editingCourse, setEditingCourse] = useState<any | null>(null); // 👈 NEW STATE
+  const [editingCourse, setEditingCourse] = useState<any | null>(null);
+  const [newCourse, setNewCourse] = useState({
+    name: "",
+    number: "",
+    startDate: "",
+    endDate: "",
+    credits: 3,
+    image: "/default.jpg",
+    description: "",
+  });
 
   const navigate = useNavigate();
 
@@ -49,24 +54,17 @@ export default function Dashboard({
     ? courses
     : courses.filter((course: any) => isEnrolledTrue(course._id));
 
-  const handleAddCourse = async () => {
-    const newCourse = {
-      name: courseName,
-      number: "CS1234",
-      startDate: "2025-01-01",
-      endDate: "2025-05-01",
+  const handleCreateCourse = async () => {
+    await addNewCourse(newCourse); // ✅ use prop from index
+    setNewCourse({
+      name: "",
+      number: "",
+      startDate: "",
+      endDate: "",
       credits: 3,
       image: "/default.jpg",
-      description: "New Course Description",
-    };
-
-    try {
-      const savedCourse = await createCourse(newCourse);
-      dispatch(addCourse(savedCourse));
-      setCourseName("");
-    } catch (err) {
-      console.error("Error creating course:", err);
-    }
+      description: "",
+    });
   };
 
   return (
@@ -75,14 +73,49 @@ export default function Dashboard({
       <hr />
 
       {isFacultyTrue && (
-        <div className="mb-4">
+        <div className="mb-4 border rounded p-3 bg-light">
+          <h4>Add New Course</h4>
           <FormControl
             className="mb-2"
-            placeholder="New Course Name"
-            value={courseName}
-            onChange={(e) => setCourseName(e.target.value)}
+            placeholder="Course Name"
+            value={newCourse.name}
+            onChange={(e) =>
+              setNewCourse({ ...newCourse, name: e.target.value })
+            }
           />
-          <Button variant="primary" onClick={handleAddCourse}>
+          <FormControl
+            className="mb-2"
+            placeholder="Course Number"
+            value={newCourse.number}
+            onChange={(e) =>
+              setNewCourse({ ...newCourse, number: e.target.value })
+            }
+          />
+          <FormControl
+            className="mb-2"
+            placeholder="Start Date (YYYY-MM-DD)"
+            value={newCourse.startDate}
+            onChange={(e) =>
+              setNewCourse({ ...newCourse, startDate: e.target.value })
+            }
+          />
+          <FormControl
+            className="mb-2"
+            placeholder="End Date (YYYY-MM-DD)"
+            value={newCourse.endDate}
+            onChange={(e) =>
+              setNewCourse({ ...newCourse, endDate: e.target.value })
+            }
+          />
+          <FormControl
+            className="mb-2"
+            placeholder="Description"
+            value={newCourse.description}
+            onChange={(e) =>
+              setNewCourse({ ...newCourse, description: e.target.value })
+            }
+          />
+          <Button variant="primary" onClick={handleCreateCourse}>
             + Add Course
           </Button>
         </div>
@@ -150,7 +183,7 @@ export default function Dashboard({
                       id="wd-edit-course-click"
                       onClick={(event) => {
                         event.preventDefault();
-                        setEditingCourse(c); // 👈 Set selected course for editing
+                        setEditingCourse(c);
                       }}
                     >
                       Edit
@@ -163,7 +196,6 @@ export default function Dashboard({
         ))}
       </div>
 
-      {/* Edit form shows up if editingCourse is set */}
       {editingCourse && (
         <div className="mt-4 border rounded p-4 bg-light">
           <h4>Edit Course</h4>
