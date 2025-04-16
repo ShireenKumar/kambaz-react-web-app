@@ -12,7 +12,6 @@ import AssignmentEditor from "./Courses/Assignments/Editor";
 import ProtectedRoute from "./Account/ProtectedRoute";
 
 import * as courseClient from "./Courses/client";
-import * as userClient from "./Account/client";
 
 axios.defaults.withCredentials = true;
 
@@ -24,7 +23,7 @@ export default function Kambaz() {
 
   const fetchCourses = async () => {
     try {
-      const courses = await userClient.findMyCourses();
+      const courses = await courseClient.fetchAllCourses();
       setCourses(courses);
     } catch (error) {
       console.error("Error fetching courses:", error);
@@ -38,7 +37,7 @@ export default function Kambaz() {
   const addNewCourse = async (newCourse: any) => {
     try {
       const savedCourse = await courseClient.createCourse(newCourse);
-      setCourses([...courses, savedCourse]); // ✅ update UI
+      setCourses([...courses, savedCourse]);
     } catch (error) {
       console.error("Error adding course:", error);
     }

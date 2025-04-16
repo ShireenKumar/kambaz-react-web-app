@@ -70,7 +70,6 @@ export default function Dashboard({
     });
   };
 
-  // Load student enrollments from backend
   useEffect(() => {
     const loadEnrollments = async () => {
       if (currentUser?.role === "Student") {
@@ -85,7 +84,7 @@ export default function Dashboard({
       }
     };
     loadEnrollments();
-  }, [currentUser, dispatch]);
+  }, [currentUser]);
 
   return (
     <div className="p-4" id="wd-dashboard">
