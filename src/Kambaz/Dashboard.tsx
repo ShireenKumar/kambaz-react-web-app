@@ -1,9 +1,9 @@
-import { setEnrollments } from "./Courses/People/enrollmentsReducer";
-import * as enrollmentsClient from "./Enrollments/client";
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Card, FormControl, Button } from "react-bootstrap";
+import { setEnrollments } from "./Courses/People/enrollmentsReducer";
+import * as enrollmentsClient from "./Enrollments/client";
 import EnrollmentButtonUpdated from "./Enrollments/EnrollmentButton";
 
 export default function Dashboard({
@@ -13,6 +13,8 @@ export default function Dashboard({
   addNewCourse,
   deleteCourse,
   updateCourse,
+  enrolling,
+  setEnrolling,
 }: {
   courses: any[];
   course: any;
@@ -20,19 +22,18 @@ export default function Dashboard({
   addNewCourse: (course: any) => void;
   deleteCourse: (courseId: any) => void;
   updateCourse: (course: any) => void;
+  enrolling: boolean;
+  setEnrolling: (enrolling: boolean) => void;
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
-  const { enrollments = [] } = useSelector(
-    (state: any) => state.enrollmentsReducer
-  );
+  const { enrollments = [] } = useSelector((state: any) => state.enrollmentsReducer);
 
-  const isFacultyTrue = currentUser?.role === "Faculty";
-  const isStudentTrue = currentUser?.role === "Student";
+  const isFaculty = currentUser?.role === "Faculty";
+  const isStudent = currentUser?.role === "Student";
 
-  const [showEnrollments, setShowEnrollments] = useState(false);
   const [editingCourse, setEditingCourse] = useState<any | null>(null);
   const [newCourse, setNewCourse] = useState({
     name: "",
@@ -44,18 +45,14 @@ export default function Dashboard({
     description: "",
   });
 
-  const isEnrolledTrue = (courseId: string) =>
+  const isEnrolled = (courseId: string) =>
     enrollments.some(
-      (enrollment: any) =>
-        enrollment.user === currentUser._id &&
-        enrollment.course === courseId
+      (enroll: any) => enroll.user === currentUser._id && enroll.course === courseId
     );
 
-  const displayedCourses = isFacultyTrue
+  const displayedCourses = enrolling
     ? courses
-    : showEnrollments
-    ? courses
-    : courses.filter((course: any) => isEnrolledTrue(course._id));
+    : courses.filter((c: any) => isEnrolled(c._id));
 
   const handleCreateCourse = async () => {
     await addNewCourse(newCourse);
@@ -73,9 +70,7 @@ export default function Dashboard({
   useEffect(() => {
     const loadEnrollments = async () => {
       if (currentUser?.role === "Student") {
-        const userCourses = await enrollmentsClient.findCoursesForUser(
-          currentUser._id
-        );
+        const userCourses = await enrollmentsClient.findCoursesForUser(currentUser._id);
         const formatted = userCourses.map((c: any) => ({
           user: currentUser._id,
           course: c._id,
@@ -88,62 +83,56 @@ export default function Dashboard({
 
   return (
     <div className="p-4" id="wd-dashboard">
-      <h1 id="wd-dashboard-title">Dashboard</h1>
+      <h1 id="wd-dashboard-title">
+        Dashboard
+        {isStudent && (
+          <Button
+            className="float-end"
+            onClick={() => setEnrolling(!enrolling)}
+          >
+            {enrolling ? "My Courses" : "All Courses"}
+          </Button>
+        )}
+      </h1>
       <hr />
 
-      {isFacultyTrue && (
+      {isFaculty && (
         <div className="mb-4 border rounded p-3 bg-light">
           <h4>Add New Course</h4>
           <FormControl
             className="mb-2"
             placeholder="Course Name"
             value={newCourse.name}
-            onChange={(e) =>
-              setNewCourse({ ...newCourse, name: e.target.value })
-            }
+            onChange={(e) => setNewCourse({ ...newCourse, name: e.target.value })}
           />
           <FormControl
             className="mb-2"
             placeholder="Course Number"
             value={newCourse.number}
-            onChange={(e) =>
-              setNewCourse({ ...newCourse, number: e.target.value })
-            }
+            onChange={(e) => setNewCourse({ ...newCourse, number: e.target.value })}
           />
           <FormControl
             className="mb-2"
             placeholder="Start Date (YYYY-MM-DD)"
             value={newCourse.startDate}
-            onChange={(e) =>
-              setNewCourse({ ...newCourse, startDate: e.target.value })
-            }
+            onChange={(e) => setNewCourse({ ...newCourse, startDate: e.target.value })}
           />
           <FormControl
             className="mb-2"
             placeholder="End Date (YYYY-MM-DD)"
             value={newCourse.endDate}
-            onChange={(e) =>
-              setNewCourse({ ...newCourse, endDate: e.target.value })
-            }
+            onChange={(e) => setNewCourse({ ...newCourse, endDate: e.target.value })}
           />
           <FormControl
             className="mb-2"
             placeholder="Description"
             value={newCourse.description}
-            onChange={(e) =>
-              setNewCourse({ ...newCourse, description: e.target.value })
-            }
+            onChange={(e) => setNewCourse({ ...newCourse, description: e.target.value })}
           />
           <Button variant="primary" onClick={handleCreateCourse}>
             + Add Course
           </Button>
         </div>
-      )}
-
-      {isStudentTrue && (
-        <Button onClick={() => setShowEnrollments(!showEnrollments)}>
-          Enrollments
-        </Button>
       )}
 
       <div className="row row-cols-1 row-cols-md-4 g-4">
@@ -155,17 +144,22 @@ export default function Dashboard({
                 variant="top"
                 width="100%"
                 height={160}
-                onClick={() =>
-                  navigate(`/Kambaz/Courses/${c._id}/Home`)
-                }
+                onClick={() => navigate(`/Kambaz/Courses/${c._id}/Home`)}
               />
               <Card.Body className="card-body">
                 <Card.Title
                   className="wd-dashboard-course-title text-nowrap overflow-hidden"
-                  onClick={() =>
-                    navigate(`/Kambaz/Courses/${c._id}/Home`)
-                  }
+                  onClick={() => navigate(`/Kambaz/Courses/${c._id}/Home`)}
                 >
+                  {enrolling && isStudent && (
+                    <Button
+                      className={`btn-sm float-end ${
+                        isEnrolled(c._id) ? "btn-danger" : "btn-success"
+                      }`}
+                    >
+                      {isEnrolled(c._id) ? "Unenroll" : "Enroll"}
+                    </Button>
+                  )}
                   {c.name}
                 </Card.Title>
                 <Card.Text
@@ -175,20 +169,19 @@ export default function Dashboard({
                   {c.description}
                 </Card.Text>
 
-                {isStudentTrue && (
+                {isStudent && !enrolling && (
                   <EnrollmentButtonUpdated
                     courseId={c._id}
-                    isEnrolled={isEnrolledTrue(c._id)}
+                    isEnrolled={isEnrolled(c._id)}
                     currentUser={currentUser}
                   />
                 )}
 
-                {isFacultyTrue && (
+                {isFaculty && (
                   <>
                     <Button
                       variant="danger"
                       className="float-end"
-                      id="wd-delete-course-click"
                       onClick={(event) => {
                         event.preventDefault();
                         deleteCourse(c._id);
@@ -199,7 +192,6 @@ export default function Dashboard({
                     <Button
                       variant="warning"
                       className="me-2 float-end"
-                      id="wd-edit-course-click"
                       onClick={(event) => {
                         event.preventDefault();
                         setEditingCourse(c);

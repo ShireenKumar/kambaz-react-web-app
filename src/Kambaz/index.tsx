@@ -10,7 +10,7 @@ import Dashboard from "./Dashboard";
 import Courses from "./Courses";
 import AssignmentEditor from "./Courses/Assignments/Editor";
 import ProtectedRoute from "./Account/ProtectedRoute";
-
+import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
 
 axios.defaults.withCredentials = true;
@@ -19,20 +19,45 @@ export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
   const [course, setCourse] = useState<any | null>(null);
 
+  const [enrolling, setEnrolling] = useState<boolean>(false);
+ const findCoursesForUser = async () => {
+   try {
+     const courses = await userClient.findCoursesForUser(currentUser._id);
+     setCourses(courses);
+   } catch (error) {
+     console.error(error);
+   }
+ };
+ const fetchCourses = async () => {
+   try {
+     const allCourses = await courseClient.fetchAllCourses();
+     const enrolledCourses = await userClient.findCoursesForUser(
+       currentUser._id
+     );
+     const courses = allCourses.map((course: any) => {
+       if (enrolledCourses.find((c: any) => c._id === course._id)) {
+         return { ...course, enrolled: true };
+       } else {
+         return course;
+       }
+     });
+     setCourses(courses);
+   } catch (error) {
+     console.error(error);
+   }
+ };
+
   const { currentUser } = useSelector((state: any) => state.accountReducer);
 
-  const fetchCourses = async () => {
-    try {
-      const courses = await courseClient.fetchAllCourses();
-      setCourses(courses);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
-    }
-  };
+ 
 
   useEffect(() => {
-    fetchCourses();
-  }, [currentUser]);
+    if (enrolling) {
+      fetchCourses();
+    } else {
+      findCoursesForUser();
+    }
+  }, [currentUser, enrolling]);
 
   const addNewCourse = async (newCourse: any) => {
     try {
@@ -93,6 +118,8 @@ export default function Kambaz() {
                         addNewCourse={addNewCourse}
                         deleteCourse={deleteCourse}
                         updateCourse={updateCourse}
+                        enrolling={enrolling} 
+                        setEnrolling={setEnrolling}
                       />
                     </ProtectedRoute>
                   }
