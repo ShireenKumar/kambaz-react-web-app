@@ -1,6 +1,7 @@
+// src/Kambaz/index.tsx
 import { useState, useEffect } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 
 import KambazNavigation from "./Navigation";
@@ -12,46 +13,69 @@ import AssignmentEditor from "./Courses/Assignments/Editor";
 import ProtectedRoute from "./Account/ProtectedRoute";
 import * as userClient from "./Account/client";
 import * as courseClient from "./Courses/client";
+import * as enrollmentsClient from "./Enrollments/client";
+import { setEnrollments } from "./Courses/People/enrollmentsReducer";
 
 axios.defaults.withCredentials = true;
 
 export default function Kambaz() {
   const [courses, setCourses] = useState<any[]>([]);
   const [course, setCourse] = useState<any | null>(null);
-
   const [enrolling, setEnrolling] = useState<boolean>(false);
- const findCoursesForUser = async () => {
-   try {
-     const courses = await userClient.findCoursesForUser(currentUser._id);
-     setCourses(courses);
-   } catch (error) {
-     console.error(error);
-   }
- };
- const fetchCourses = async () => {
-   try {
-     const allCourses = await courseClient.fetchAllCourses();
-     const enrolledCourses = await userClient.findCoursesForUser(
-       currentUser._id
-     );
-     const courses = allCourses.map((course: any) => {
-       if (enrolledCourses.find((c: any) => c._id === course._id)) {
-         return { ...course, enrolled: true };
-       } else {
-         return course;
-       }
-     });
-     setCourses(courses);
-   } catch (error) {
-     console.error(error);
-   }
- };
 
   const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const dispatch = useDispatch();
 
- 
+  const findCoursesForUser = async () => {
+    try {
+      const courses = await userClient.findCoursesForUser(currentUser._id);
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchCourses = async () => {
+    try {
+      const allCourses = await courseClient.fetchAllCourses();
+      const enrolledCourses = await userClient.findCoursesForUser(currentUser._id);
+      const courses = allCourses.map((course: any) => {
+        const isEnrolled = enrolledCourses.find((c: any) => c._id === course._id);
+        return { ...course, enrolled: !!isEnrolled };
+      });
+      setCourses(courses);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateEnrollment = async (courseId: string, enrolled: boolean) => {
+    try {
+      if (enrolled) {
+        await userClient.enrollIntoCourse(currentUser._id, courseId);
+      } else {
+        await userClient.unenrollFromCourse(currentUser._id, courseId);
+      }
+
+      setCourses(
+        courses.map((course) =>
+          course._id === courseId ? { ...course, enrolled: enrolled } : course
+        )
+      );
+
+      const userCourses = await enrollmentsClient.findCoursesForUser(currentUser._id);
+      const formatted = userCourses.map((c: any) => ({
+        user: currentUser._id,
+        course: c._id,
+      }));
+      dispatch(setEnrollments(formatted));
+    } catch (error) {
+      console.error("Error updating enrollment:", error);
+    }
+  };
 
   useEffect(() => {
+    if (!currentUser?._id) return;
     if (enrolling) {
       fetchCourses();
     } else {
@@ -77,7 +101,6 @@ export default function Kambaz() {
       console.error("Error deleting course:", error);
     }
   };
-  
 
   const updateCourse = async (updatedCourse: any) => {
     if (!updatedCourse || !updatedCourse._id) {
@@ -118,8 +141,9 @@ export default function Kambaz() {
                         addNewCourse={addNewCourse}
                         deleteCourse={deleteCourse}
                         updateCourse={updateCourse}
-                        enrolling={enrolling} 
+                        enrolling={enrolling}
                         setEnrolling={setEnrolling}
+                        updateEnrollment={updateEnrollment} // ✅ added here
                       />
                     </ProtectedRoute>
                   }

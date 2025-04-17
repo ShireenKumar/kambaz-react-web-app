@@ -2,6 +2,28 @@ import axios from "axios";
 const REMOTE_SERVER = import.meta.env.VITE_REMOTE_SERVER;
 const COURSES_API = `${REMOTE_SERVER}/api/courses`;
 const ASSIGNMENTS_API = `${REMOTE_SERVER}/api/assignments`;
+const axiosWithCreds = axios.create({ withCredentials: true });
+
+export const findAssignmentsForCourses = async (cid: string) => {
+  const res = await axiosWithCreds.get(`${ASSIGNMENTS_API}/courses/${cid}/assignments`);
+  return res.data;
+};
+
+export const createAssignments = async (cid: string, assignment: any) => {
+  const res = await axiosWithCreds.post(`${ASSIGNMENTS_API}/courses/${cid}/assignments`, assignment);
+  return res.data;
+};
+
+export const updateAssignments = async (aid: string, assignment: any) => {
+  const res = await axiosWithCreds.put(`${ASSIGNMENTS_API}/assignments/${aid}`, assignment);
+  return res.data;
+};
+
+export const deleteAssignments = async (aid: string) => {
+  const res = await axiosWithCreds.delete(`${ASSIGNMENTS_API}/assignments/${aid}`);
+  return res.data;
+};
+
 
 export const fetchAllAssignments = async () => {
   const { data } = await axios.get(ASSIGNMENTS_API);

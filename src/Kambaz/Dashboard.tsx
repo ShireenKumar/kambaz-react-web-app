@@ -15,6 +15,7 @@ export default function Dashboard({
   updateCourse,
   enrolling,
   setEnrolling,
+  updateEnrollment, // ✅ Added prop
 }: {
   courses: any[];
   course: any;
@@ -24,6 +25,7 @@ export default function Dashboard({
   updateCourse: (course: any) => void;
   enrolling: boolean;
   setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void; // ✅ Added type
 }) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -153,6 +155,10 @@ export default function Dashboard({
                 >
                   {enrolling && isStudent && (
                     <Button
+                      onClick={(event) => {
+                        event.preventDefault();
+                        updateEnrollment(c._id, !isEnrolled(c._id)); // ✅ use prop here
+                      }}
                       className={`btn-sm float-end ${
                         isEnrolled(c._id) ? "btn-danger" : "btn-success"
                       }`}
